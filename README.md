@@ -5,4 +5,4 @@ Files:
 4) MachineLearning.py is the module with the functions to apply diferent ML models.
 5) clusterai_espona_joaquin_machine_learning is the original project made with my partner Martín Bellini during the course Data Science from Universidad Tecnológica Nacional - Industrial Engineering.
 
-Thanks to our professor Martín Palazo.
+Thanks to our professor Martín Palazzo.
