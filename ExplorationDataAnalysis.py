@@ -6,9 +6,28 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 
 
+#fig, ax = plt.subplots(figsize=(15,7))
+#data1_pan.groupby(['order_number']).mean()['perc_reassig'].plot(ax=ax)
+#data5_pan.groupby(['order_number']).mean()['perc_reassig'].plot(ax=ax)
+#data6_pan.groupby(['order_number']).mean()['perc_reassig'].plot(ax=ax)
+#data7_pan.groupby(['order_number']).mean()['perc_reassig'].plot(ax=ax)
+#ax.set_xlim([0, 30])
+#plt.xticks(fontsize=16, rotation=360)
+#plt.yticks(fontsize=16)
+#l=plt.legend(fontsize=16)
+#l.get_texts()[0].set_text('FEB-2019')
+#l.get_texts()[1].set_text('ENE-2019')
+#l.get_texts()[2].set_text('DIC-2018')
+#l.get_texts()[3].set_text('OCT-2018')
+#plt.suptitle('% Reassignments vs Order_Number per couriers', size=22)
+#plt.title('PAN', size=18)
+#plt.ylabel('% Reassignments', size=16)
+#plt.xlabel('Order_Number', size=16)
+
+
 class Graphs():
     def BoxplotGender (X):
-        g = sns.catplot(x="victima_genero",y="victima_edad",data=X, kind="boxen", height = 5 ,aspect=3,palette = "muted")
+        g = sns.catplot(x="victima_genero",y="victima_edad",data=X, kind="boxen", height = 5 ,aspect=2.5,palette = "muted")
         g.despine(left=True)
         g.set_xticklabels(rotation=0)
         plt.xlabel("Victim Gender")
@@ -21,23 +40,27 @@ class Graphs():
         convert_dict = {'victima_cantidad': int, 'victima_edad': int} 
         lavf_edades2 = lavf_edades2.astype(convert_dict)
         victima_edades2 = lavf_edades2.iloc[:,4]
-        victima_edades2.describe()
+        #victima_edades2.describe()
     
-        plt.figure(figsize=(20,5))
+        plt.figure(figsize=(15,5))
         a = sns.countplot(x="victima_edad",data=lavf_edades2)
-        a.set_xticklabels(a.get_xticklabels(), rotation=90)
+        #a.set_xticklabels(a.get_xticklabels(), rotation=90)
+        plt.xticks(np.arange(-1, 101, step=5),
+                   ('0','5','10','15','20','25','30','35','40','45','50','55','60','65','70','75','80','85','90','95','100'))
         plt.xlabel("Age of victims")
         plt.ylabel("Amount")
         plt.title('Age distribution',size = 20)
 
-        plt.figure(figsize=(20,5))
+        plt.figure(figsize=(15,5))
         sns.kdeplot(victima_edades2, color="Blue", shade = True)
+        plt.xticks(np.arange(-1, 101, step=5),
+                   ('0','5','10','15','20','25','30','35','40','45','50','55','60','65','70','75','80','85','90','95','100'))
         plt.xlabel("Age of victims")
         plt.ylabel("Frecuency")
 
 
-        plt.figure(figsize=(20,5))
-        sns.countplot(x="victima_rango_etario",data=lavf_edades2)
+        plt.figure(figsize=(15,5))
+        sns.countplot(x="victima_rango_etario",data=lavf_edades2, order = lavf_edades2['victima_rango_etario'].value_counts().index)
         plt.xlabel("Range age of victims")
         plt.ylabel("Amount")
         return plt.show()
@@ -49,15 +72,19 @@ class Graphs():
         victima_edades2 = lavf_edades2.iloc[:,4]
         victima_edades2.describe()
     
-        plt.figure(figsize=(20,5))
+        plt.figure(figsize=(15,5))
         a = sns.countplot(x="victima_edad",data=lavf_edades2)
-        a.set_xticklabels(a.get_xticklabels(), rotation=90)
+        #a.set_xticklabels(a.get_xticklabels(), rotation=90)
+        plt.xticks(np.arange(-1, 101, step=5),
+                   ('0','5','10','15','20','25','30','35','40','45','50','55','60','65','70','75','80','85','90','95','100'))
         plt.xlabel("Age of victims")
         plt.ylabel("Amount")
         plt.title('Age distribution',size = 20)
 
-        plt.figure(figsize=(20,5))
+        plt.figure(figsize=(15,5))
         sns.kdeplot(victima_edades2, color="Blue", shade = True)
+        plt.xticks(np.arange(-1, 101, step=5),
+                   ('0','5','10','15','20','25','30','35','40','45','50','55','60','65','70','75','80','85','90','95','100'))
         plt.xlabel("Age of victims")
         plt.ylabel("Frecuency")
 
@@ -81,6 +108,8 @@ class Graphs():
         asns = sns.lineplot(x="index", y="Cantidad de llamados", data=horacompletadt2)
         asns.set(xlabel="Hour", ylabel="Call Amount")
         plt.title('Call Distribution during day',size = 20)
+        plt.xticks(np.arange(0, 87000, step=3600),
+                   ('0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24'))
 
         plt.figure(figsize=(15,5))
         asns = sns.lineplot(x="index",y="Cantidad de llamados", data=horasoladt2)
@@ -98,16 +127,23 @@ class Graphs():
     def WeekdayPlot(X):
         df_momentos = X.groupby(['día', 'momento_del_dia']).size().reset_index().pivot(columns='día', index='momento_del_dia', values=0)
         df_momentos_inversa = X.groupby(['día', 'momento_del_dia']).size().reset_index().pivot(columns='momento_del_dia', index='día', values=0)
-        df_momentos_inversa.plot(kind='bar', stacked=True, figsize=(12,5), colormap="viridis")
-        plt.xlabel("By week day")
+        day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        df_momentos_inversa.loc[day_order].plot(kind='bar', stacked=True, figsize=(15,5), colormap="viridis")
+        plt.xticks(rotation=0)
+        plt.xlabel("")
         plt.ylabel("Amount")
+        l=plt.legend(fontsize=10, loc='lower right')
+        l.get_texts()[0].set_text('Afternoon')
+        l.get_texts()[1].set_text('Evening')
+        l.get_texts()[2].set_text('Moorning')
+        l.get_texts()[3].set_text('Night')
         return plt.show()
 
     def DaytimePlot(X):
         plt.figure(figsize=(10,5))
         plt.title('Parts of the day',size = 20)
         sns.countplot(x="momento_del_dia",data=X)
-        plt.xlabel("Parts of the day")
+        plt.xlabel("")
         plt.ylabel("Amount")
 
 #    plt.figure(figsize=(10,5))
@@ -124,6 +160,8 @@ class Graphs():
         sns.set_style("ticks")
         sns.heatmap(X.corr(), annot=True, fmt='.2g')
         plt.title("Pearson Linear Correlation between features")
+        #plt.xticks(rotation=90)
+        plt.yticks(rotation=45)
         return plt.show()
 
     def LRdistplotSFS(ytest,ypred_lr_sfs):
@@ -143,47 +181,47 @@ class Graphs():
     
     def KNNdistplotSFS(ytest,ypred_knn_sfs):
         sns.distplot(ytest, color="b")
-        sns.distplot(ypred_knn_sfs, color="g")
+        sns.distplot(ypred_knn_sfs, color="g").set(title='KNN without Feature Selection', xlabel='Victims age')
         plt.show()
         
     def KNNdistplotTh(ytest,ypred_knn_var):
         sns.distplot(ytest, color="b")
-        sns.distplot(ypred_knn_var, color="g")
+        sns.distplot(ypred_knn_var, color="g").set(title='KNN with Threshole',xlabel='Victims age')
         plt.show()
         
     def KNNdistplotLs(ytest, ypred_knn_lasso):
         sns.distplot(ytest, color="b")
-        sns.distplot(ypred_knn_lasso, color="g")
+        sns.distplot(ypred_knn_lasso, color="g").set(title='KNN with Lasso',xlabel='Victims age')
         plt.show()
         
     def SRVdistplotSFS(ytest,ypred_svr_l_sfs):
         sns.distplot(ytest, color="b")
-        sns.distplot(ypred_svr_l_sfs, color="g")
+        sns.distplot(ypred_svr_l_sfs, color="g").set(title='SVR without Feature Selection', xlabel='Victims age')
         plt.show()
         
     def SRVdistplotTh(ytest, ypred_svr_l_var):
         sns.distplot(ytest, color="b")
-        sns.distplot(ypred_svr_l_var, color="g")
+        sns.distplot(ypred_svr_l_var, color="g").set(title='SVR with Threshole',xlabel='Victims age')
         plt.show()
         
     def SRVdistplotLs(ytest, ypred_svr_l_lasso):
         sns.distplot(ytest, color="b")
-        sns.distplot(ypred_svr_l_lasso, color="g")
+        sns.distplot(ypred_svr_l_lasso, color="g").set(title='SVR with Lasso',xlabel='Victims age')
         plt.show()
         
     def GSdistplotSFS(ytest, ypred_svr_g_sfs):
         sns.distplot(ytest, color="b")
-        sns.distplot(ypred_svr_g_sfs, color="g")
+        sns.distplot(ypred_svr_g_sfs, color="g").set(title='SVR-Gauss without Feature Selection', xlabel='Victims age')
         plt.show()
         
     def GSdistplotTh(ytest, ypred_svr_g_var):
         sns.distplot(ytest, color="b")
-        sns.distplot(ypred_svr_g_var, color="g")
+        sns.distplot(ypred_svr_g_var, color="g").set(title='SVR-Gauss with Threshole',xlabel='Victims age')
         plt.show()
         
     def GSdistplotLs(ytest, ypred_svr_g_lasso):
         sns.distplot(ytest, color="b")
-        sns.distplot(ypred_svr_g_lasso, color="g")
+        sns.distplot(ypred_svr_g_lasso, color="g").set(title='SVR-Gauss with Lasso',xlabel='Victims age')
         plt.show()
         
     def ROC_KNN_Lasso(fpr1, tpr1, auc_knn_l_cl):
@@ -198,9 +236,11 @@ class Graphs():
         
     def ConfussionMatrix_KNN_Lasso(ytest, ypred_knn_test_l_cl):
         cm_knn_l_cl = confusion_matrix(ytest, ypred_knn_test_l_cl)
-        df_knn_l_cl = pd.DataFrame(cm_knn_l_cl, index = ['Intervention', 'No Intervention'], columns = ['Intervention predicted', 'No Intervention predicted'])
+        df_knn_l_cl = pd.DataFrame(cm_knn_l_cl, index = ['Intervention', 'No Intervention'], columns = ['Intervention \n predicted', 'No Intervention \n predicted'])
         plt.figure(figsize = (6,4))
         sns.heatmap(df_knn_l_cl, annot=True, fmt='g')
+        plt.xticks(rotation=0)
+        plt.yticks(rotation=0)
         plt.title('Classification Confusion matrix with Lasso')
         plt.show()
         
@@ -217,9 +257,11 @@ class Graphs():
     
     def ConfussionMatrix_SVM_Lasso(ytest2, ypred_svm_test):    
         cm_svm = confusion_matrix(ytest2, ypred_svm_test)
-        df_svm = pd.DataFrame(cm_svm, index = ['Intervention', 'No Intervencion'], columns = ['Intervention predicted', 'No Intervencion predicted'])
+        df_svm = pd.DataFrame(cm_svm, index = ['Intervention', 'No Intervencion'], columns = ['Intervention \n predicted', 'No Intervencion \n predicted'])
         plt.figure(figsize = (6,4))
         sns.heatmap(df_svm, annot=True, fmt='g')
+        plt.xticks(rotation=0)
+        plt.yticks(rotation=0)
         plt.title('Classification Confusion matrix con Lasso')
         plt.show()
         
@@ -258,7 +300,7 @@ class Text():
             print("The models selected to advance with the prediction of age are:")
             print("- KNN with Lasso")
             print("- Gaussian SVR without Feature Selection")
-            print("These models are chosen, despite not having the best performance according to their errors. Graphically their curve and histogram are the most faithful to the test one")
+            print("These models were chosen, despite not having the best performance according to their errors. Graphically their curve and histogram are the most faithful to the test one")
         
         
             
